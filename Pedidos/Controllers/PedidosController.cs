@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Pedidos.Data;
 using Pedidos.Models;
 using Pedidos.Models.Dto;
+using System.Net;
 
 namespace Pedidos.Controllers
 {
@@ -20,11 +21,14 @@ namespace Pedidos.Controllers
         }
 
         [HttpPost]
-        public JsonResult Post([FromBody]PedidoCreate pedido)
+        public async Task<JsonResult> PostAsync([FromBody]PedidoCreate pedido)
         {
             var novoPedido = new Pedido { codProduto = pedido.codProduto, qtd = pedido.qtd, obs = pedido.obs };
             _context.Pedidos.Add(novoPedido);
             _context.SaveChanges();
+            WebRequest request = WebRequest.Create("http://localhost:50204/api/pedidos/v1/Pedidos/" + novoPedido.id);
+            request.Credentials = CredentialCache.DefaultCredentials;
+            WebResponse response = await request.GetResponseAsync();
             return new JsonResult(novoPedido);
         }
 
