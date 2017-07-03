@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  pedidos:
+    image: pedidos
+    build:
+      context: ./Pedidos
+      dockerfile: Dockerfile
