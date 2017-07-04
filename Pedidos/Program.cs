@@ -17,6 +17,7 @@ namespace Pedidos
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseStartup<Startup>()
                 .UseApplicationInsights()
+                .UseUrls("http://localhost:5000")
                 .Build();
 
             host.Run();
