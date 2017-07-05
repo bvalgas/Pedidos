@@ -24,7 +24,11 @@ namespace Pedidos.Controllers
         public async Task<JsonResult> PostAsync([FromBody]PedidoCreate pedido)
         {
             var novoPedido = new Pedido { codProduto = pedido.codProduto, qtd = pedido.qtd, obs = pedido.obs };
+       
             _context.Pedidos.Add(novoPedido);
+            novoPedido._links = new LinksPedido { self = "http://localhost:5000/api/pedidos/v1/Pedidos/" + novoPedido.id };
+            _context.Pedidos.Add(novoPedido);
+
             _context.SaveChanges();
             
             return new JsonResult(novoPedido);
@@ -36,7 +40,7 @@ namespace Pedidos.Controllers
             return new JsonResult(_context.Pedidos.SingleOrDefault(x => x.id == id));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}/orcamento")]
         public JsonResult Put(int id, [FromBody]OrcamentoUpdade orcamento)
         {
             var pedido = _context.Pedidos.SingleOrDefault(x => x.id == id);
@@ -44,6 +48,9 @@ namespace Pedidos.Controllers
             {
                 pedido.orcamento = new Orcamento { aceita = orcamento.aceita, dataEntrega = orcamento.dataEntrega, valor = orcamento.valor };
                 _context.SaveChanges();
+                pedido.orcamento._links = new LinksOrcamento { pedido = "http://localhost:5000/api/pedidos/v1/Pedidos/" + pedido.id };
+                _context.SaveChanges();
+
                 return new JsonResult(pedido.orcamento);
             }
             return null;
